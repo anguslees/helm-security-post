@@ -89,7 +89,7 @@ and how to test your own cluster.
 defaults.
 
 ```console
- % helm init
+$ helm init
 $HELM_HOME has been configured at /home/gus/.helm.
 
 Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
@@ -102,7 +102,7 @@ namespace.  Note the default tiller port is 44134 - we're going to use
 that later.
 
 ```console
- % kubectl -n kube-system get svc/tiller-deploy deploy/tiller-deploy
+$ kubectl -n kube-system get svc/tiller-deploy deploy/tiller-deploy
 NAME                TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)     AGE
 svc/tiller-deploy   ClusterIP   10.0.0.216   <none>        44134/TCP   1h
 
@@ -122,7 +122,7 @@ no special privileges.
 [helmsploit]: helmsploit/Dockerfile
 
 ```console
- % kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit incluster
+$ kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit incluster
 root@incluster:/# helm version
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Error: cannot connect to Tiller
@@ -220,12 +220,12 @@ Note that **just removing the `Service` is not sufficient**. The
 tiller port is still exposed, if you know the pod address.
 
 ```console
- % kubectl -n kube-system delete service tiller-deploy
+$ kubectl -n kube-system delete service tiller-deploy
 service "tiller-deploy" deleted
- % kubectl get pods -n kube-system -l app=helm,name=tiller -o custom-columns=NAME:.metadata.name,PODIP:.status.podIP
+$ kubectl get pods -n kube-system -l app=helm,name=tiller -o custom-columns=NAME:.metadata.name,PODIP:.status.podIP
 NAME                             PODIP
 tiller-deploy-84b97f465c-pdfdp   172.17.0.3
- % kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
+$ kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
 root@incluster:/# helm --host=tiller-deploy.kube-system:44134 version
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Error: cannot connect to Tiller
@@ -239,7 +239,7 @@ the pod IP address.  Continuing this example to show that restarting
 tiller with `--listen=localhost:44134` *does* restrict access:
 
 ```console
- % kubectl -n kube-system patch deployment tiller-deploy --patch '
+$ kubectl -n kube-system patch deployment tiller-deploy --patch '
 spec:
   template:
     spec:
@@ -251,7 +251,7 @@ spec:
 '
 
 deployment "tiller-deploy" patched
- % kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
+$ kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
 root@incluster:/# helm --host=172.17.0.3:44134 version
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Error: cannot connect to Tiller
@@ -270,9 +270,9 @@ idea of `localhost` just fine.  I'll come back to the `helm` CLI again
 later.
 
 ```console
- % kubectl auth can-i create pods --subresource portforward -n kube-system
+$ kubectl auth can-i create pods --subresource portforward -n kube-system
 yes
- % helm version
+$ helm version
 Client: &version.Version{SemVer:"v2.7.0", GitCommit:"08c1144f5eb3e3b636d9775617287cc26e53dba4", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.7.0", GitCommit:"08c1144f5eb3e3b636d9775617287cc26e53dba4", GitTreeState:"clean"}
 ```
@@ -312,14 +312,14 @@ certificate generation in a [simple script][tls.make] that uses
 [tls.make]: tls.make
 
 ```console
- % : Ensure at least v2.7.2 !
- % helm version --client --short
+$ : Ensure at least v2.7.2 !
+$ helm version --client --short
 Client: v2.7.2+g8478fb4
- % ./tls.make
+$ ./tls.make
 (output skipped)
- % kubectl delete deploy -n kube-system tiller-deploy
+$ kubectl delete deploy -n kube-system tiller-deploy
 deployment "tiller-deploy" deleted
- % helm init --tiller-tls --tiller-tls-cert ./tiller.crt --tiller-tls-key ./tiller.key --tiller-tls-verify --tls-ca-cert ca.crt
+$ helm init --tiller-tls --tiller-tls-cert ./tiller.crt --tiller-tls-key ./tiller.key --tiller-tls-verify --tls-ca-cert ca.crt
 $HELM_HOME has been configured at /home/gus/.helm.
 (Use --client-only to suppress this message, or --upgrade to upgrade Tiller to the current version.)
 Happy Helming!
@@ -335,7 +335,7 @@ TLS files have been uploaded into the `tiller-secret` Secret in
 Now we can retry our earlier in-cluster test:
 
 ```console
- % kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
+$ kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit:latest incluster
 root@incluster:/# telnet tiller-deploy.kube-system 44134
 Trying 10.0.0.6...
 Connected to tiller-deploy.kube-system.svc.cluster.local.
@@ -357,22 +357,22 @@ over the port-forward.  **With TLS enabled, *everyone* has to use TLS
 certs.**
 
 ```console
- % helm version
+$ helm version
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Error: cannot connect to Tiller
- % ./tls.make myclient.crt myclient.key
+$ ./tls.make myclient.crt myclient.key
 (output skipped)
- % helm --tls --tls-ca-cert ca.crt --tls-cert myclient.crt --tls-key myclient.key version
+$ helm --tls --tls-ca-cert ca.crt --tls-cert myclient.crt --tls-key myclient.key version
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
- % cp ca.crt $(helm home)/ca.pem
- % cp myclient.crt $(helm home)/cert.pem
- % cp myclient.key $(helm home)/key.pem
- % : The following looks like a bug!
- % helm version --tls
+$ cp ca.crt $(helm home)/ca.pem
+$ cp myclient.crt $(helm home)/cert.pem
+$ cp myclient.key $(helm home)/key.pem
+$ : The following looks like a bug!
+$ helm version --tls
 could not read x509 key pair (cert: "/cert.pem", key: "/key.pem"): can't load key pair from cert /cert.pem and key /key.pem: open /cert.pem: no such file or directory
- % export HELM_HOME=$(helm home)
- % helm version --tls
+$ export HELM_HOME=$(helm home)
+$ helm version --tls
 Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
 ```
@@ -425,25 +425,25 @@ One obvious example is providing a tiller instance per namespace,
 limited to only creating resources in *that* namespace.
 
 ```console
- % NAMESPACE=default
- % kubectl -n $NAMESPACE create serviceaccount tiller
+$ NAMESPACE=default
+$ kubectl -n $NAMESPACE create serviceaccount tiller
 serviceaccount "tiller" created
- % kubectl -n $NAMESPACE create role tiller --verb '*' --resource 'services,deployments,configmaps,secrets,persistentvolumeclaims'
+$ kubectl -n $NAMESPACE create role tiller --verb '*' --resource 'services,deployments,configmaps,secrets,persistentvolumeclaims'
 role "tiller" created
- % kubectl -n $NAMESPACE create rolebinding tiller --role tiller --serviceaccount ${NAMESPACE}:tiller
+$ kubectl -n $NAMESPACE create rolebinding tiller --role tiller --serviceaccount ${NAMESPACE}:tiller
 rolebinding "tiller" created
- % kubectl create clusterrole tiller --verb get --resource namespaces
+$ kubectl create clusterrole tiller --verb get --resource namespaces
 clusterrole "tiller" created
- % kubectl create clusterrolebinding tiller --clusterrole tiller --serviceaccount ${NAMESPACE}:tiller
+$ kubectl create clusterrolebinding tiller --clusterrole tiller --serviceaccount ${NAMESPACE}:tiller
 clusterrolebinding "tiller" created
- % helm init --service-account=tiller --tiller-namespace=$NAMESPACE
+$ helm init --service-account=tiller --tiller-namespace=$NAMESPACE
 $HELM_HOME has been configured at /home/gus/.helm.
 
 Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
 Happy Helming!
- % kubectl -n $NAMESPACE delete service tiller-deploy
+$ kubectl -n $NAMESPACE delete service tiller-deploy
 service "tiller-deploy" deleted
- % kubectl -n $NAMESPACE patch deployment tiller-deploy --patch '
+$ kubectl -n $NAMESPACE patch deployment tiller-deploy --patch '
 spec:
   template:
     spec:
@@ -466,14 +466,14 @@ localhost.
 Let's test it out:
 
 ```console
- % helm --tiller-namespace=$NAMESPACE install stable/wordpress
+$ helm --tiller-namespace=$NAMESPACE install stable/wordpress
 NAME:   intent-mite
 LAST DEPLOYED: Sun Dec  3 13:28:56 2017
 NAMESPACE: default
 STATUS: DEPLOYED
 (snip)
 
- % helm --tiller-namespace=$NAMESPACE install ./pwnchart-0.1.0.tgz
+$ helm --tiller-namespace=$NAMESPACE install ./pwnchart-0.1.0.tgz
 Error: release boisterous-quetzal failed: clusterroles.rbac.authorization.k8s.io is forbidden: User "system:serviceaccount:default:tiller" cannot create clusterroles.rbac.authorization.k8s.io at the cluster scope
 ```
 
@@ -517,16 +517,16 @@ with regular `kubectl` and YAML files.  Using the plugin looks like
 this:
 
 ```console
- % mkdir -p ~/.kube/plugins/helm
- % pushd ~/.kube/plugins/helm
- % wget \
+$ mkdir -p ~/.kube/plugins/helm
+$ pushd ~/.kube/plugins/helm
+$ wget \
  https://raw.githubusercontent.com/bitnami/helm-crd/master/plugin/helm/helm \
  https://raw.githubusercontent.com/bitnami/helm-crd/master/plugin/helm/plugin.yaml
- % chmod +x helm
- % popd
- % kubectl delete deploy -n kube-system tiller-deploy
+$ chmod +x helm
+$ popd
+$ kubectl delete deploy -n kube-system tiller-deploy
 deployment "tiller-deploy" deleted
- % kubectl plugin helm init
+$ kubectl plugin helm init
 customresourcedefinition "helmreleases.helm.bitnami.com" created
 deployment "tiller-deploy" created
 ```
@@ -539,9 +539,9 @@ in the same pod and the tiller gRPC port restricted to localhost (as
 described earlier).
 
 ```console
- % kubectl plugin helm install mariadb --version 2.0.1
+$ kubectl plugin helm install mariadb --version 2.0.1
 helmrelease "mariadb-5w9hd" created
- % kubectl get helmrelease mariadb-5w9hd -o yaml
+$ kubectl get helmrelease mariadb-5w9hd -o yaml
 apiVersion: helm.bitnami.com/v1
 kind: HelmRelease
 metadata:
