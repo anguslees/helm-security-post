@@ -119,7 +119,7 @@ following sets up a [basic shell environment][helmsploit] running in a
 temporary pod in the "default" namespace.  Importantly, this pod has
 no special privileges.
 
-[helmsploit]: helmsploit/Dockerfile
+[helmsploit]: Dockerfile
 
 ```console
 $ kubectl run -n default --quiet --rm --restart=Never -ti --image=helmsploit incluster
