@@ -328,7 +328,7 @@ Happy Helming!
 _What has this done?_ This deletes the old tiller Deployment (to clean
 up after our earlier `--listen=localhost:44134` change), and then
 installs a fresh tiller with the **gRPC port open inside the cluster,
-but *secured with TLS certificates**.  If you are curious, the tiller
+but *secured with TLS certificates***.  If you are curious, the tiller
 TLS files have been uploaded into the `tiller-secret` Secret in
 `kube-system` namespace.
 
