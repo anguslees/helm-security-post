@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+printf "Attempting to get version information from Tiller via DNS\n"
+printf "Command: \"helm --host tiller-deploy.kube-system:44134 version\" \n"
+printf " \n"
+sleep 3
+helm --host tiller-deploy.kube-system:44134 version

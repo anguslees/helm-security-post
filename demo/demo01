@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+printf "Attempting to get version information from Tiller\n"
+printf "Command: \"helm version\" \n"
+printf " \n"
+sleep 3
+helm version

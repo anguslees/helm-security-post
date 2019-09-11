@@ -1,5 +1,5 @@
 FROM bitnami/minideb
-MAINTAINER Angus Lees <gus@bitnami.com>
+MAINTAINER Brandon B. Jozsa <b@tigera.io>
 
 RUN install_packages curl bash openssl ca-certificates telnet make
 
@@ -11,6 +11,11 @@ RUN \
  curl -LO https://storage.googleapis.com/kubernetes-release/release/$v/bin/linux/amd64/kubectl; \
  chmod +x kubectl; \
  mv kubectl /usr/local/bin/
+
+COPY demo/ /demo/
+
+RUN chmod +x /demo/*
+RUN mv /demo/* /usr/local/bin/
 
 COPY pwnchart /pwnchart/
 COPY tls.make /usr/local/bin/

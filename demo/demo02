@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+printf "Attempting to connect to the Tiller port via DNS\n"
+printf "Command: \"telnet tiller-deploy.kube-system 44134\" \n"
+printf " \n"
+sleep 3
+telnet tiller-deploy.kube-system 44134

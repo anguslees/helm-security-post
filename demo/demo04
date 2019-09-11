@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+printf "Attempting to get secrets in the kube-system namespace\n"
+printf "Command: \"kubectl get secrets -n kube-system\" \n"
+printf " \n"
+sleep 3
+kubectl get secrets -n kube-system
