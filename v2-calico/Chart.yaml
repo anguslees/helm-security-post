@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: v3.8.2
+description: Calico CNI with BGP, Calico Network Policy, and Typha Autoscaling
+icon: https://avatars1.githubusercontent.com/u/12304728
+keywords:
+- cni
+- library
+- kubernetes-common
+name: v2-calico
+version: v3.8.2-0

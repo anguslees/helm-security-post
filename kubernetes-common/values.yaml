@@ -1,0 +1,5 @@
+endpoints:
+  fqdn: null
+global:
+  region: cluster
+  tld: local

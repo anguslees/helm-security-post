@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: v1.14.6
+description: A Common Library for Kubernetes Utilities and Templates
+icon: https://avatars1.githubusercontent.com/u/13629408
+keywords:
+- library
+- kubernetes-common
+name: kubernetes-common
+version: v1.14.6-0
